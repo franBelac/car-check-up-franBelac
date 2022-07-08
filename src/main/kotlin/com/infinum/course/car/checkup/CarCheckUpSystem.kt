@@ -40,9 +40,8 @@ object CarCheckUpSystem {
     }
 
     fun getCheckUps (vin: String) : List<CheckUp> {
-        val filteredCheckups = checkUpList.filter { it.car.vin == vin }
-        if (filteredCheckups.isEmpty()) throw CarNotFoundException(vin)
-        return filteredCheckups
+        if(!carsList.any { it.vin == vin })  throw CarNotFoundException(vin)
+        return  checkUpList.filter { it.car.vin == vin }
     }
 
     fun countCheckUps (manufacturer : String) : Int {
