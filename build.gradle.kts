@@ -1,8 +1,11 @@
 plugins {
     kotlin("jvm") version "1.7.0"
-    id("org.jetbrains.kotlin.plugin.spring") version "1.7.0"
+    kotlin("plugin.spring") version "1.7.0"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
     id("org.jlleitschuh.gradle.ktlint-idea") version "10.3.0"
+
+    id("org.springframework.boot") version "2.7.1" // Defines version of Spring Boot
+    id("io.spring.dependency-management") version "1.0.11.RELEASE" // Handles Spring
 }
 
 group = "com.infinum.course"
@@ -20,8 +23,21 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("org.assertj:assertj-core:3.23.1")
     testImplementation("io.mockk:mockk:1.12.4")
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.ninja-squad:springmockk:3.1.1")
+
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.named("bootJar").configure {
+    dependsOn(tasks.named("ktlintCheck"))
+    dependsOn(tasks.named("test"))
 }

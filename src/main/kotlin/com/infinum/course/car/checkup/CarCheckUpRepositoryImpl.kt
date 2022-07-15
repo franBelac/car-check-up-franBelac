@@ -1,81 +1,75 @@
 package com.infinum.course.car.checkup
 
-import org.springframework.core.io.Resource
-import java.io.FileOutputStream
+import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit.YEARS
 
-class InMemoryCarCheckUpRepository(private val dataSource: DataSource) : CarCheckUpRepository {
-
-    init {
-        println(dataSource.toString())
-    }
+@Service
+class InMemoryCarCheckUpRepository() {
 
     private val carCheckUpMap = mutableMapOf<Long, CarCheckUp>()
-    override fun insert(performedAt: LocalDateTime, car: Car): Long {
-        val id = (carCheckUpMap.keys.maxOrNull() ?: 0) + 1
-        carCheckUpMap[id] = CarCheckUp(id = id, performedAt = performedAt, car = car)
-        return id
-    }
-    override fun findById(id: Long): CarCheckUp {
-        return carCheckUpMap[id] ?: throw CarCheckUpNotFoundException(id)
-    }
-    override fun deleteById(id: Long): CarCheckUp {
-        return carCheckUpMap.remove(id) ?: throw CarCheckUpNotFoundException(id)
-    }
-}
+    private val carsMap = mutableMapOf<Long, Car>()
 
-class InFileCarCheckUpRepository(
-    private val carCheckUpsFileResource: Resource
-) : CarCheckUpRepository {
     init {
-        if (carCheckUpsFileResource.exists().not()) {
-            carCheckUpsFileResource.file.createNewFile()
-        }
+        val localDateTime = LocalDateTime.now()
+        carsMap.putAll(
+            mapOf(
+                1L to Car(localDateTime,2000,"Porsche","917","1KFUE"),
+                2L to Car(localDateTime,2001,"Skoda","Octavia","OIJIO2"),
+                3L to Car(localDateTime,2002,"Seat","Leon","VBUUD43")
+        )
+        )
+        carCheckUpMap.putAll(mapOf(
+            1L to CarCheckUp(LocalDateTime.of(2017, 1, 14, 10, 34),"Carlos",300L,1L),
+            2L to CarCheckUp(LocalDateTime.of(2022, 1, 14, 10, 34),"Santos",175L,2L),
+            3L to CarCheckUp(LocalDateTime.of(2020, 1, 14, 10, 34),"Santos",175L,3L),
+            4L to CarCheckUp(LocalDateTime.of(2018, 1, 14, 10, 34),"Santos",175L,3L)
+        ))
     }
-    override fun insert(performedAt: LocalDateTime, car: Car): Long {
-        val file = carCheckUpsFileResource.file
-        val id = (
-            file.readLines()
-                .filter { it.isNotEmpty() }.maxOfOrNull { line ->
-                    line.split(",").first().toLong()
-                } ?: 0
-            ) + 1
-        file.appendText("$id,${car.vin},${car.manufacturer},${car.model},$performedAt\n")
+
+    fun addCar(car: Car) : Long {
+        val id = (carsMap.keys.maxOrNull() ?: 0) + 1
+        carsMap[id] = car
         return id
     }
-    override fun findById(id: Long): CarCheckUp {
-        return carCheckUpsFileResource.file.readLines()
-            .filter { it.isNotEmpty() }
-            .find { line -> line.split(",").first().toLong() == id }
-            ?.convertToCarCheckUp()
-            ?: throw CarCheckUpNotFoundException(id)
+
+    fun fetchCarDetails(id: Long) : Array<Any> {
+        val car = carsMap[id] ?: throw CarNotFoundException()
+        val checkUps = carCheckUpMap.filter { it.value.carId == id }.values.sortedByDescending { it.performedAt }
+        val localDateTime = LocalDateTime.now()
+        val noCheckupNeeded = checkUps.any { YEARS.between(it.performedAt,localDateTime) == 0L }
+        val checkupNecessary = if(noCheckupNeeded)  "This car doesn't need a checkup" else "This car needs a checkup"
+        return arrayOf(car,checkUps,checkupNecessary)
     }
-    override fun deleteById(id: Long): CarCheckUp {
-        val checkUpLines = carCheckUpsFileResource.file.readLines()
-        var lineToDelete: String? = null
-        FileOutputStream(carCheckUpsFileResource.file)
-            .writer().use { fileOutputWriter ->
-                checkUpLines.forEach { line ->
-                    if (line.split(",").first().toLong() == id) {
-                        lineToDelete = line
-                    } else {
-                        fileOutputWriter.appendLine(line)
-                    }
+
+
+    fun addCheckup(carCheckUp: CarCheckUp): Long {
+        val newCheckUpId = carCheckUp.carId
+        println(carsMap.keys.firstOrNull { it == newCheckUpId } )
+        carsMap.keys.firstOrNull { it == newCheckUpId }  ?: throw CarCHeckUpInvalidException()
+        val id = (carCheckUpMap.keys.maxOrNull() ?: 0) + 1
+        carCheckUpMap[id] = carCheckUp
+        return id
+    }
+
+    fun getCheckupAnalytics() : Map<String,Int> {
+        val mapOfAnalytics = mutableMapOf<String,Int>()
+        val idSFromCheckups = carCheckUpMap.values.map { it.carId }
+
+        for ((carId,car) in carsMap) {
+
+            val manufacturer = car.manufacturer
+
+            for (idFromCheckup in idSFromCheckups) {
+
+                if (idFromCheckup == carId) {
+
+                        if (mapOfAnalytics[manufacturer] == null) mapOfAnalytics[manufacturer] = 0
+
+                        mapOfAnalytics[manufacturer]?.let { mapOfAnalytics.put(manufacturer, it + 1) }
                 }
             }
-        return lineToDelete?.convertToCarCheckUp() ?: throw
-        CarCheckUpNotFoundException(id)
-    }
-    private fun String.convertToCarCheckUp(): CarCheckUp {
-        val tokens = split(",")
-        return CarCheckUp(
-            id = tokens[0].toLong(),
-            performedAt = LocalDateTime.parse(tokens[4]),
-            car = Car(
-                vin = tokens[1],
-                manufacturer = tokens[2],
-                model = tokens[3]
-            )
-        )
+        }
+        return mapOfAnalytics
     }
 }

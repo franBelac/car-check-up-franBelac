@@ -1,42 +1,39 @@
 package com.infinum.course.car.checkup
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
+
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.NoSuchBeanDefinitionException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.getBean
-import org.springframework.context.ApplicationContext
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import java.time.LocalDateTime
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 
-@ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [ApplicationConfiguration::class])
-class CarCheckupIntegrationTest @Autowired constructor (
-    private var applicationContext: ApplicationContext,
-) {
+@SpringBootTest
+@AutoConfigureMockMvc
+class CarCheckupIntegrationTest constructor(@Autowired var mockMvc: MockMvc)  {
+
+//    @Autowired
+//    private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var carCheckUpRepository: InMemoryCarCheckUpRepository
 
     @Test
-    fun verifyCheckupRepoBean() {
-        assertThat(applicationContext.getBean(DataSource::class.java)).isNotNull
-        assertThat(applicationContext.getBean(CarCheckUpRepository::class.java)).isNotNull
-
-
-        assertThatThrownBy { applicationContext.getBean("random bean") }
-            .isInstanceOf(NoSuchBeanDefinitionException::class.java)
-
+    fun testAddingCar() {
+        mockMvc.get("/car-details/1")
+            .andExpect {
+                status { is2xxSuccessful() }
+            }
+        mockMvc.get("/car-details/-1")
+            .andExpect {
+                status { is4xxClientError() }
+            }
     }
 
     @Test
-    fun getCheckupById() {
-        val localDateTime = LocalDateTime.now()
-        val car = Car("Porsche","Taycan","988")
-        val checkUpRepository = applicationContext.getBean<CarCheckUpRepository>()
-        checkUpRepository.insert(localDateTime,car)
-        assertThat(checkUpRepository.findById(1).car).isEqualTo(car)
+    fun testGettingAnalytics() {
+    mockMvc.get("/checkup-analytics")
+        .andExpect { carCheckUpRepository.getCheckupAnalytics() }
     }
+
 }
-
-
