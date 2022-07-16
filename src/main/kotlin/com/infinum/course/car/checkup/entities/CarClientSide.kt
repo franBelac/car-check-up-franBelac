@@ -1,4 +1,4 @@
-package com.infinum.course.car.checkup
+package com.infinum.course.car.checkup.entities
 
 data class CarClientSide (
     val productionYear: Short,

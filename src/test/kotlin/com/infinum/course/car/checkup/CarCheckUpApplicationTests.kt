@@ -1,12 +1,12 @@
 package com.infinum.course.car.checkup
 
+import com.infinum.course.car.checkup.entities.Car
+import com.infinum.course.car.checkup.entities.CarCHeckUpInvalidException
+import com.infinum.course.car.checkup.entities.CarCheckUp
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.TestConfiguration
 import java.time.LocalDateTime
-
-@TestConfiguration
 class CarCheckUpApplicationTests {
 
     private  var carCheckUpRepository: InMemoryCarCheckUpRepository = InMemoryCarCheckUpRepository()

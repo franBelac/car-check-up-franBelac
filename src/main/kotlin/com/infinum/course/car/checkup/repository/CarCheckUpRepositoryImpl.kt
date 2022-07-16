@@ -1,10 +1,14 @@
 package com.infinum.course.car.checkup
 
-import org.springframework.stereotype.Service
+import com.infinum.course.car.checkup.entities.Car
+import com.infinum.course.car.checkup.entities.CarCHeckUpInvalidException
+import com.infinum.course.car.checkup.entities.CarCheckUp
+import com.infinum.course.car.checkup.entities.CarNotFoundException
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit.YEARS
 
-@Service
+@Repository
 class InMemoryCarCheckUpRepository() {
 
     private val carCheckUpMap = mutableMapOf<Long, CarCheckUp>()
@@ -53,23 +57,9 @@ class InMemoryCarCheckUpRepository() {
     }
 
     fun getCheckupAnalytics() : Map<String,Int> {
-        val mapOfAnalytics = mutableMapOf<String,Int>()
-        val idSFromCheckups = carCheckUpMap.values.map { it.carId }
-
-        for ((carId,car) in carsMap) {
-
-            val manufacturer = car.manufacturer
-
-            for (idFromCheckup in idSFromCheckups) {
-
-                if (idFromCheckup == carId) {
-
-                        if (mapOfAnalytics[manufacturer] == null) mapOfAnalytics[manufacturer] = 0
-
-                        mapOfAnalytics[manufacturer]?.let { mapOfAnalytics.put(manufacturer, it + 1) }
-                }
-            }
-        }
-        return mapOfAnalytics
+        return carCheckUpMap.values
+            .mapNotNull { carsMap[it.carId] }
+            .groupingBy { it.manufacturer }
+            .eachCount()
     }
 }

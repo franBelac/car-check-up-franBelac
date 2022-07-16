@@ -37,7 +37,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.named("bootJar").configure {
-    dependsOn(tasks.named("ktlintCheck"))
-    dependsOn(tasks.named("test"))
+tasks.bootJar {
+    dependsOn(tasks.ktlintCheck)
+    dependsOn(tasks.test)
 }

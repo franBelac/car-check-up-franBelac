@@ -1,5 +1,9 @@
-package com.infinum.course.car.checkup
+package com.infinum.course.car.checkup.controller
 
+import com.infinum.course.car.checkup.entities.CarClientSide
+import com.infinum.course.car.checkup.InMemoryCarCheckUpRepository
+import com.infinum.course.car.checkup.entities.Car
+import com.infinum.course.car.checkup.entities.CarCheckUp
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
