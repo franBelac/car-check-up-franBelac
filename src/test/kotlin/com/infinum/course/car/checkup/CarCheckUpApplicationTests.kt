@@ -3,28 +3,55 @@ package com.infinum.course.car.checkup
 import com.infinum.course.car.checkup.entities.Car
 import com.infinum.course.car.checkup.entities.CarCHeckUpInvalidException
 import com.infinum.course.car.checkup.entities.CarCheckUp
+import com.infinum.course.car.checkup.entities.CarNotFoundException
+import com.infinum.course.car.checkup.repository.CarCheckUpRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+import org.springframework.context.annotation.ComponentScan
 import java.time.LocalDateTime
-class CarCheckUpApplicationTests {
 
-    private  var carCheckUpRepository: InMemoryCarCheckUpRepository = InMemoryCarCheckUpRepository()
+@JdbcTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ComponentScan
+class CarCheckUpApplicationTests constructor (
+    @Autowired  var carCheckUpRepository: CarCheckUpRepository
+        ) {
 
     @Test
-    fun returnCorrectCar () {
-        val car = Car(LocalDateTime.now(),2014,"nissan","skyline","FSHDSF56")
-        val id = carCheckUpRepository.addCar(car)
-        assertThat(carCheckUpRepository.fetchCarDetails(id)[0] == car)
+    fun testAddCar() {
+        assertThat(
+            carCheckUpRepository.addCar(
+                Car(
+                    LocalDateTime.now(),
+                    2013,
+                    "Hyundai",
+                    "i10",
+                    "WIOSEF89"
+                )
+            )
+        ).isEqualTo(1)
     }
 
     @Test
-    fun doesAddCheckupThrowError() {
-        val nonExistentId = -1L
-        val falseCheckup = CarCheckUp(LocalDateTime.now(),"Test",1L,nonExistentId)
-        assertThatThrownBy {carCheckUpRepository.addCheckup(falseCheckup)}.isInstanceOf(CarCHeckUpInvalidException::class.java)
+    fun testFetchingDetails() {
+        val id : Long = -1L
+        assertThatThrownBy { carCheckUpRepository.fetchCarDetails(id) }.isInstanceOf(CarNotFoundException::class.java).hasMessage("Car with id $id not found")
     }
 
-
+    @Test
+    fun testAddingCheckups() {
+        assertThatThrownBy { carCheckUpRepository.addCheckup(
+            CarCheckUp(
+                LocalDateTime.now(),
+                "Pablo",
+                87,
+                -1
+            )
+        ) }.isInstanceOf(CarCHeckUpInvalidException::class.java)
+    }
 
 }
