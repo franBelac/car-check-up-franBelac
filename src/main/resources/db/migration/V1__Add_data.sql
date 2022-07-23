@@ -1,19 +1,19 @@
 create table cars (
-    id bigserial primary key ,
-    dateAdded varchar(50),
-    productionYear smallint,
-    manufacturer varchar(30),
-    model varchar(30),
-    vin varchar(50)
+    id UUID PRIMARY KEY,
+    date_added VARCHAR(50) NOT NULL ,
+    production_year SMALLINT NOT NULL ,
+    manufacturer VARCHAR(30) NOT NULL,
+    model VARCHAR(30) NOT NULL ,
+    vin VARCHAR(50) NOT NULL
 );
 
 
 create table carcheckups (
-    id bigserial primary key ,
-    performedAt varchar(50),
-    workerName varchar(30),
-    price bigint,
-    carId bigint
+    id UUID PRIMARY KEY,
+    performed_at VARCHAR(50) NOT NULL,
+    worker_name VARCHAR(30) NOT NULL,
+    price BIGINT NOT NULL,
+    checked_car_id UUID CONSTRAINT car_fk REFERENCES cars(id)
 );
 
 -- insert into cars(productionYear,manufacturer,model,vin) values  (2000,'Porsche','Taycan','GJHL30');

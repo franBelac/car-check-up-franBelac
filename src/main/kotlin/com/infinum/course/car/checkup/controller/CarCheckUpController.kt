@@ -1,55 +1,61 @@
 package com.infinum.course.car.checkup.controller
 
-import com.infinum.course.car.checkup.repository.CarCheckUpRepository
-import com.infinum.course.car.checkup.entities.CarClientSide
-import com.infinum.course.car.checkup.entities.Car
-import com.infinum.course.car.checkup.entities.CarCheckUp
+import com.infinum.course.car.checkup.entities.carEntities.CarClientSide
+import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.CarDetails
-import org.springframework.http.HttpStatus
+import com.infinum.course.car.checkup.service.CarCheckUpService
+import org.springframework.data.domain.Pageable
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
-import java.time.LocalDateTime
+
+import java.util.UUID
 
 @Controller
-class CarCheckUpController(private val carCheckUpRepository: CarCheckUpRepository) {
+class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
 
     @PostMapping("/add-car")
     @ResponseBody
-    fun addCar(@RequestBody clientCar: CarClientSide) : ResponseEntity<Long> {
-        val car = Car(LocalDateTime.now(),clientCar.productionYear,clientCar.manufacturer,clientCar.model,clientCar.vin)
-        val addedCarId = carCheckUpRepository.addCar(car)
-        return ResponseEntity(addedCarId, HttpStatus.OK)
-    }
+    fun addCar(@RequestBody clientCar: CarClientSide) : ResponseEntity<UUID> = ResponseEntity.ok(
+        carCheckUpService.addCar(clientCar)
+    )
 
     @PostMapping("/add-checkup")
     @ResponseBody
-    fun addCheckup(@RequestBody carCheckUp: CarCheckUp) : ResponseEntity<Long> {
-        val addedCheckUpId = carCheckUpRepository.addCheckup(carCheckUp)
-        return ResponseEntity(addedCheckUpId,HttpStatus.OK)
-    }
+    fun addCheckup(@RequestBody carCheckUp: CarCheckUp) : ResponseEntity<UUID> = ResponseEntity.ok(
+        carCheckUpService.addCheckup(carCheckUp)
+    )
 
 
     @GetMapping("/car-details/{id}")
     @ResponseBody
-    fun getCarDetails(@PathVariable id : Long) : ResponseEntity<CarDetails> {
-        return ResponseEntity(carCheckUpRepository.fetchCarDetails(id),HttpStatus.OK)
-    }
+    fun getCarDetails(@PathVariable id: UUID) : ResponseEntity<CarDetails> = ResponseEntity.ok(
+        carCheckUpService.getCarDetails(id)
+    )
 
     @GetMapping("/checkup-analytics")
     @ResponseBody
-    fun getCheckupAnalytics() : ResponseEntity<Map<String,Int>> {
-        return ResponseEntity(carCheckUpRepository.getCheckupAnalytics(),HttpStatus.OK)
-    }
+    fun getCheckupAnalytics() : ResponseEntity<Map<String,Long>> = ResponseEntity.ok(
+        carCheckUpService.getCheckupAnalytics()
+    )
 
-    @ExceptionHandler(value = [(Exception::class)])
-    fun handleException(e: Exception) : ResponseEntity<String> {
-        return ResponseEntity(e.message,HttpStatus.NOT_FOUND)
-    }
+    @GetMapping("/paged/cars")
+    fun getAllCars(pageable: Pageable) = ResponseEntity.ok(
+        carCheckUpService.getAllCars(pageable)
+    )
 
+    @GetMapping("/paged/checkups")
+    fun getCheckupsForId(
+        @RequestParam(defaultValue = "") checkedCarId: UUID,
+        @RequestParam(defaultValue = "0") page : Int,
+        @RequestParam(defaultValue = "2") size : Int,
+    ) =
+        ResponseEntity.ok(
+            carCheckUpService.getCheckupsById(checkedCarId,page,size)
+        )
 }

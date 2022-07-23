@@ -6,7 +6,7 @@ services:
   courses-database:
     image: "postgres:13-alpine"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - "course-db-data:/var/lib/postgresql/data"
     environment:
