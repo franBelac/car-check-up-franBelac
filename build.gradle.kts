@@ -40,7 +40,11 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
 
-   // implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    testImplementation("org.mock-server:mockserver-spring-test-listener:5.13.2")
+
 }
 
 dependencyManagement {

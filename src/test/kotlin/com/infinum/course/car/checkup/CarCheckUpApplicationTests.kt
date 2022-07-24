@@ -2,6 +2,7 @@ package com.infinum.course.car.checkup
 
 import com.infinum.course.car.checkup.entities.carEntities.Car
 import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
 import com.infinum.course.car.checkup.repository.CarRepository
 import com.infinum.course.car.checkup.repository.CheckUpRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -28,32 +29,40 @@ class CarCheckUpApplicationTests @Autowired constructor (
         val car1 = Car(
             dateAdded = "2021-07-23T02:04:38.344699600",
             productionYear = 2003,
-            manufacturer = "Porsche",
-            model = "Taycan",
+            manufacturerModel = ManufacturerModel(
+                "Porsche",
+                "Taycan"
+            ),
             vin = "HVUDIS215"
         )
         val car1Id = carRepository.save(car1)
         val car2 = Car(
             dateAdded = "2020-07-23T02:04:38.344699600",
             productionYear = 2018,
-            manufacturer = "Hyundai",
-            model = "Tucson",
+            manufacturerModel = ManufacturerModel(
+                "Hyundai",
+                "Tucson"
+            ),
             vin = "OIJWF89"
         )
         val car2Id = carRepository.save(car2)
         val car3 = Car(
             dateAdded = "2017-07-23T02:04:38.344699600",
             productionYear = 2017,
-            manufacturer = "Kia",
-            model = "Stinger",
+            manufacturerModel = ManufacturerModel(
+                "Kia",
+                "Stinger"
+            ),
             vin = "DIOJSF54"
         )
         val car3Id = carRepository.save(car3)
         val car4 = Car(
             dateAdded = "2015-07-23T02:04:38.344699600",
             productionYear = 2016,
-            manufacturer = "Opel",
-            model = "Insignia",
+            manufacturerModel = ManufacturerModel(
+                "Opel",
+                "Insignia"
+            ),
             vin = "ASFHOIJA648"
         )
         val car4Id = carRepository.save(car4)

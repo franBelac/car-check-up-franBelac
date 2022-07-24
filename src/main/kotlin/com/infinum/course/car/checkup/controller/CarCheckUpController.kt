@@ -21,26 +21,26 @@ class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
 
     @PostMapping("/add-car")
     @ResponseBody
-    fun addCar(@RequestBody clientCar: CarClientSide) : ResponseEntity<UUID> = ResponseEntity.ok(
+    fun addCar(@RequestBody clientCar: CarClientSide): ResponseEntity<UUID> = ResponseEntity.ok(
         carCheckUpService.addCar(clientCar)
     )
 
     @PostMapping("/add-checkup")
     @ResponseBody
-    fun addCheckup(@RequestBody carCheckUp: CarCheckUp) : ResponseEntity<UUID> = ResponseEntity.ok(
+    fun addCheckup(@RequestBody carCheckUp: CarCheckUp): ResponseEntity<UUID> = ResponseEntity.ok(
         carCheckUpService.addCheckup(carCheckUp)
     )
 
 
     @GetMapping("/car-details/{id}")
     @ResponseBody
-    fun getCarDetails(@PathVariable id: UUID) : ResponseEntity<CarDetails> = ResponseEntity.ok(
+    fun getCarDetails(@PathVariable id: UUID): ResponseEntity<CarDetails> = ResponseEntity.ok(
         carCheckUpService.getCarDetails(id)
     )
 
     @GetMapping("/checkup-analytics")
     @ResponseBody
-    fun getCheckupAnalytics() : ResponseEntity<Map<String,Long>> = ResponseEntity.ok(
+    fun getCheckupAnalytics(): ResponseEntity<Map<String, Long>> = ResponseEntity.ok(
         carCheckUpService.getCheckupAnalytics()
     )
 
@@ -52,10 +52,11 @@ class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
     @GetMapping("/paged/checkups")
     fun getCheckupsForId(
         @RequestParam(defaultValue = "") checkedCarId: UUID,
-        @RequestParam(defaultValue = "0") page : Int,
-        @RequestParam(defaultValue = "2") size : Int,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "2") size: Int,
     ) =
         ResponseEntity.ok(
-            carCheckUpService.getCheckupsById(checkedCarId,page,size)
+            carCheckUpService.getCheckupsById(checkedCarId, page, size)
         )
+
 }
