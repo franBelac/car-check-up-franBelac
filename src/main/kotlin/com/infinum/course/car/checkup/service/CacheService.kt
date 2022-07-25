@@ -1,20 +1,35 @@
 package com.infinum.course.car.checkup.service
 
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManModelDTO
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModelException
+import com.infinum.course.car.checkup.repository.ManufacturerModelRepository
 import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.CachePut
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
-class CacheService {
+class CacheService(
+    private val manufacturerModelRepository: ManufacturerModelRepository
+) {
 
-    @CachePut("validCar")
-    fun carValidatonCache(isValid: Boolean): Boolean {
-        println("caching $isValid for inserted car...")
-        return isValid
+    @Cacheable("manmodel")
+    fun getManModel(manufacturerModel: ManufacturerModel): ManModelDTO {
+        if (!manufacturerModelRepository.findAll().contains(
+                manufacturerModel
+            )
+        ) throw ManufacturerModelException()
+
+        return ManModelDTO(
+            manufacturerModel.manufacturer,
+            manufacturerModel.model
+        )
     }
 
-    @CacheEvict("validCar")
-    fun evictValidationCache() {
-        println("Removing from cache...")
+    @CacheEvict(value = arrayOf("manmodel"), allEntries = true)
+    fun evictManModel() {
+        println("Removing all from cache...")
     }
+
+
 }

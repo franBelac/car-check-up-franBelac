@@ -5,6 +5,7 @@ import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.CarDetails
 import com.infinum.course.car.checkup.service.CarCheckUpService
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,14 +22,14 @@ class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
 
     @PostMapping("/add-car")
     @ResponseBody
-    fun addCar(@RequestBody clientCar: CarClientSide): ResponseEntity<UUID> = ResponseEntity.ok(
-        carCheckUpService.addCar(clientCar)
+    fun addCar(@RequestBody clientCar: CarClientSide): ResponseEntity<UUID> = ResponseEntity(
+        carCheckUpService.addCar(clientCar), HttpStatus.CREATED
     )
 
     @PostMapping("/add-checkup")
     @ResponseBody
-    fun addCheckup(@RequestBody carCheckUp: CarCheckUp): ResponseEntity<UUID> = ResponseEntity.ok(
-        carCheckUpService.addCheckup(carCheckUp)
+    fun addCheckup(@RequestBody carCheckUp: CarCheckUp): ResponseEntity<UUID> = ResponseEntity(
+        carCheckUpService.addCheckup(carCheckUp), HttpStatus.CREATED
     )
 
 

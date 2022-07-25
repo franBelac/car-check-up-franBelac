@@ -4,7 +4,6 @@ import com.infinum.course.car.checkup.entities.carEntities.CarClientSide
 import com.infinum.course.car.checkup.entities.CarDetails
 import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
-import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModelException
 import com.infinum.course.car.checkup.repository.CarRepository
 import com.infinum.course.car.checkup.repository.CheckUpRepository
 import com.infinum.course.car.checkup.repository.ManufacturerModelRepository
@@ -31,12 +30,7 @@ class CarCheckUpService(
 
         val manufacturerModel = ManufacturerModel(clientCar.manufacturer, clientCar.model)
 
-        if (!manufacturerModelRepository.findAll().contains(manufacturerModel)) {
-            cacheService.carValidatonCache(false)
-            throw ManufacturerModelException()
-        }
-
-        cacheService.carValidatonCache(true)
+        cacheService.getManModel(manufacturerModel)
 
         return carRepository.save(
             clientCar.toCar(),
@@ -50,7 +44,7 @@ class CarCheckUpService(
 
     fun getCarDetails(id: UUID): CarDetails {
 
-        cacheService.evictValidationCache()
+        cacheService.evictManModel()
 
         val car = carRepository.getCarById(id)
         return CarDetails(

@@ -12,16 +12,16 @@ import javax.persistence.Table
 class ManufacturerModel() {
 
     @Id
-    @Column(name = "manufacturer" )
-    var manufacturer : String = ""
+    @Column(name = "manufacturer")
+    var manufacturer: String = ""
 
     @Id
     @Column(name = "model")
-    var model : String = ""
+    var model: String = ""
 
     constructor(
-        manufacturer : String,
-        model : String
+        manufacturer: String,
+        model: String
     ) : this() {
         this.manufacturer = manufacturer
         this.model = model
@@ -31,5 +31,9 @@ class ManufacturerModel() {
         return other is ManufacturerModel
                 && this.manufacturer == other.manufacturer
                 && this.model == other.model
+    }
+
+    override fun toString(): String {
+        return manufacturer + model
     }
 }
