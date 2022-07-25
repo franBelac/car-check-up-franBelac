@@ -22,22 +22,25 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation("org.springframework:spring-context:5.3.20")
-    testImplementation("org.springframework:spring-test:5.3.20")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    testImplementation("org.assertj:assertj-core:3.23.1")
-    testImplementation("io.mockk:mockk:1.12.4")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.flywaydb:flyway-core")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("io.mockk:mockk:1.12.4")
+    testImplementation("org.springframework:spring-test:5.3.20")
+    testImplementation("org.testcontainers:postgresql")
 
     runtimeOnly("org.postgresql:postgresql")
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.flywaydb:flyway-core")
-    testImplementation("org.testcontainers:postgresql")
+
+   // implementation("org.springframework.boot:spring-boot-starter-jdbc")
 }
 
 dependencyManagement {
@@ -47,7 +50,6 @@ dependencyManagement {
 }
 
 testSets {
-
 }
 
 tasks.withType<Test> {

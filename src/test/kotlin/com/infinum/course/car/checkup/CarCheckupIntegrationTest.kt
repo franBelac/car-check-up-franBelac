@@ -1,9 +1,9 @@
-package com.infinum.course.car.checkup.com.infinum.course.car.checkup
+package com.infinum.course.car.checkup
 
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.infinum.course.car.checkup.entities.CarCheckUp
-import com.infinum.course.car.checkup.entities.CarClientSide
+import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
+import com.infinum.course.car.checkup.entities.carEntities.CarClientSide
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import java.time.LocalDateTime
+import java.util.*
 
 
 @SpringBootTest
@@ -46,10 +46,10 @@ class CarCheckupIntegrationTest @Autowired constructor(
         mockMvc.post("/add-checkup") {
             content = objectMapper.writeValueAsString(
                 CarCheckUp(
-                    performedAt = LocalDateTime.now(),
+                    performedAt = "2015-07-23T02:04:38.344699600",
                     workerName = "Fabio",
                     price = 410,
-                    carId = 1
+                    checkedCarId = UUID.randomUUID()
                 )
             )
             contentType = MediaType.APPLICATION_JSON
@@ -64,7 +64,7 @@ class CarCheckupIntegrationTest @Autowired constructor(
     fun testAnalytics() {
         mockMvc.get("/checkup-analytics").andExpect {
             status {
-
+                is2xxSuccessful()
             }
         }
     }
@@ -76,6 +76,23 @@ class CarCheckupIntegrationTest @Autowired constructor(
                 is4xxClientError()
             }
         }
+    }
+
+    @Test
+    fun testPaginationCars() {
+        mockMvc.get("/paged/cars").andExpect {
+            status {
+                is2xxSuccessful()
+            }
+        }
+    }
+
+    @Test
+    fun testPaginationCheckups() {
+        mockMvc.get("/paged/checkups?checkedCarId=2d3212f8-58e9-47f4-bbe6-a8441496eaf6&page=0&size=2")
+            .andExpect { status {
+                is2xxSuccessful()
+            } }
     }
 
 }
