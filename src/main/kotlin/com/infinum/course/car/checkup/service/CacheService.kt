@@ -26,7 +26,7 @@ class CacheService(
         )
     }
 
-    @CacheEvict(value = arrayOf("manmodel"), allEntries = true)
+    @CacheEvict(value = ["manmodel"], allEntries = true)
     fun evictManModel() {
         println("Removing all from cache...")
     }

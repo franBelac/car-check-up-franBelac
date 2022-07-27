@@ -9,31 +9,12 @@ import javax.persistence.Table
 @Entity
 @IdClass(ManufacturerModelId::class)
 @Table(name = "manufacturermodels")
-class ManufacturerModel() {
-
+data class ManufacturerModel(
     @Id
     @Column(name = "manufacturer")
-    var manufacturer: String = ""
+    val manufacturer: String = "",
 
     @Id
     @Column(name = "model")
-    var model: String = ""
-
-    constructor(
-        manufacturer: String,
-        model: String
-    ) : this() {
-        this.manufacturer = manufacturer
-        this.model = model
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is ManufacturerModel
-                && this.manufacturer == other.manufacturer
-                && this.model == other.model
-    }
-
-    override fun toString(): String {
-        return manufacturer + model
-    }
-}
+    val model: String = ""
+)

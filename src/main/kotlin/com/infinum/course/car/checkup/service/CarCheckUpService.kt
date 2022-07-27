@@ -52,7 +52,7 @@ class CarCheckUpService(
             car.checkUps.isEmpty() || YEARS.between(
                 LocalDateTime.now(),
                 LocalDateTime.parse(car.checkUps.elementAt(0).performedAt)
-            ).toInt() !== 0
+            ).toInt() != 0
         )
     }
 

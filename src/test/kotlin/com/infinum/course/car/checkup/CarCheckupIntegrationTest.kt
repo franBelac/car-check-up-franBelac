@@ -35,7 +35,7 @@ class CarCheckupIntegrationTest @Autowired constructor(
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status {
-                isOk()
+                is4xxClientError()
             }
         }
     }

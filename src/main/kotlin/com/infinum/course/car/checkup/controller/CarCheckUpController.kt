@@ -20,13 +20,13 @@ import java.util.UUID
 @Controller
 class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
 
-    @PostMapping("/add-car")
+    @PostMapping("/car")
     @ResponseBody
     fun addCar(@RequestBody clientCar: CarClientSide): ResponseEntity<UUID> = ResponseEntity(
         carCheckUpService.addCar(clientCar), HttpStatus.CREATED
     )
 
-    @PostMapping("/add-checkup")
+    @PostMapping("/checkup")
     @ResponseBody
     fun addCheckup(@RequestBody carCheckUp: CarCheckUp): ResponseEntity<UUID> = ResponseEntity(
         carCheckUpService.addCheckup(carCheckUp), HttpStatus.CREATED

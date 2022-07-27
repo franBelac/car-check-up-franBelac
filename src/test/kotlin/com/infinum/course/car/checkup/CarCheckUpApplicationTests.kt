@@ -5,24 +5,38 @@ import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
 import com.infinum.course.car.checkup.repository.CarRepository
 import com.infinum.course.car.checkup.repository.CheckUpRepository
+import com.infinum.course.car.checkup.repository.ManufacturerModelRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class CarCheckUpApplicationTests @Autowired constructor (
+class CarCheckUpApplicationTests @Autowired constructor(
     val carRepository: CarRepository,
-    val checkUpRepository: CheckUpRepository
-        ) {
+    val checkUpRepository: CheckUpRepository,
+    val manufacturerModelRepository: ManufacturerModelRepository
+) {
 
     private val listOfIds = mutableListOf<Car>()
 
     @BeforeEach
     fun setup() {
+
+        manufacturerModelRepository.saveAll(
+            listOf(
+                ManufacturerModel("Porsche", "Panamera"),
+                ManufacturerModel("Hyundai", "i10"),
+                ManufacturerModel("Volkswagen", "Polo"),
+                ManufacturerModel("Citroen", "C3")
+            )
+        )
+
         carRepository.deleteAll()
         checkUpRepository.deleteAll()
         listOfIds.clear()
@@ -31,7 +45,7 @@ class CarCheckUpApplicationTests @Autowired constructor (
             productionYear = 2003,
             manufacturerModel = ManufacturerModel(
                 "Porsche",
-                "Taycan"
+                "Panamera"
             ),
             vin = "HVUDIS215"
         )
@@ -41,7 +55,7 @@ class CarCheckUpApplicationTests @Autowired constructor (
             productionYear = 2018,
             manufacturerModel = ManufacturerModel(
                 "Hyundai",
-                "Tucson"
+                "i10"
             ),
             vin = "OIJWF89"
         )
@@ -50,8 +64,8 @@ class CarCheckUpApplicationTests @Autowired constructor (
             dateAdded = "2017-07-23T02:04:38.344699600",
             productionYear = 2017,
             manufacturerModel = ManufacturerModel(
-                "Kia",
-                "Stinger"
+                "Volkswagen",
+                "Polo"
             ),
             vin = "DIOJSF54"
         )
@@ -60,8 +74,8 @@ class CarCheckUpApplicationTests @Autowired constructor (
             dateAdded = "2015-07-23T02:04:38.344699600",
             productionYear = 2016,
             manufacturerModel = ManufacturerModel(
-                "Opel",
-                "Insignia"
+                "Citroen",
+                "C3"
             ),
             vin = "ASFHOIJA648"
         )
@@ -116,6 +130,23 @@ class CarCheckUpApplicationTests @Autowired constructor (
         assertThat(
             checkUpRepository.getCheckupAnalytics().size
         ).isEqualTo(4)
+    }
+
+    @Test
+    fun checkForConstraints() {
+        assertThatThrownBy {
+            carRepository.save(
+                Car(
+                    dateAdded = "",
+                    productionYear = 2016,
+                    manufacturerModel = ManufacturerModel(
+                        "Lamborghini",
+                        "Sian"
+                    ),
+                    vin = "DHS541"
+                )
+            )
+        }.isInstanceOf(JpaObjectRetrievalFailureException::class.java)
     }
 
 }
