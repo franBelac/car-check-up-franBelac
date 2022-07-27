@@ -6,7 +6,7 @@ plugins {
 
     id("org.springframework.boot") version "2.7.1" // Defines version of Spring Boot
     id("io.spring.dependency-management") version "1.0.11.RELEASE" // Handles Spring
-    id ("org.unbroken-dome.test-sets") version "4.0.0"
+    id("org.unbroken-dome.test-sets") version "4.0.0"
 }
 
 group = "com.infinum.course"
@@ -40,7 +40,13 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
 
-   // implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    testImplementation("org.mock-server:mockserver-spring-test-listener:5.13.2")
+
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+
 }
 
 dependencyManagement {

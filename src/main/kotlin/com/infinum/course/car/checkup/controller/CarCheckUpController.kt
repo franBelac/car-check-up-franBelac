@@ -5,6 +5,7 @@ import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.CarDetails
 import com.infinum.course.car.checkup.service.CarCheckUpService
 import org.springframework.data.domain.Pageable
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -19,28 +20,28 @@ import java.util.UUID
 @Controller
 class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
 
-    @PostMapping("/add-car")
+    @PostMapping("/car")
     @ResponseBody
-    fun addCar(@RequestBody clientCar: CarClientSide) : ResponseEntity<UUID> = ResponseEntity.ok(
-        carCheckUpService.addCar(clientCar)
+    fun addCar(@RequestBody clientCar: CarClientSide): ResponseEntity<UUID> = ResponseEntity(
+        carCheckUpService.addCar(clientCar), HttpStatus.CREATED
     )
 
-    @PostMapping("/add-checkup")
+    @PostMapping("/checkup")
     @ResponseBody
-    fun addCheckup(@RequestBody carCheckUp: CarCheckUp) : ResponseEntity<UUID> = ResponseEntity.ok(
-        carCheckUpService.addCheckup(carCheckUp)
+    fun addCheckup(@RequestBody carCheckUp: CarCheckUp): ResponseEntity<UUID> = ResponseEntity(
+        carCheckUpService.addCheckup(carCheckUp), HttpStatus.CREATED
     )
 
 
     @GetMapping("/car-details/{id}")
     @ResponseBody
-    fun getCarDetails(@PathVariable id: UUID) : ResponseEntity<CarDetails> = ResponseEntity.ok(
+    fun getCarDetails(@PathVariable id: UUID): ResponseEntity<CarDetails> = ResponseEntity.ok(
         carCheckUpService.getCarDetails(id)
     )
 
     @GetMapping("/checkup-analytics")
     @ResponseBody
-    fun getCheckupAnalytics() : ResponseEntity<Map<String,Long>> = ResponseEntity.ok(
+    fun getCheckupAnalytics(): ResponseEntity<Map<String, Long>> = ResponseEntity.ok(
         carCheckUpService.getCheckupAnalytics()
     )
 
@@ -52,10 +53,11 @@ class CarCheckUpController(private val carCheckUpService: CarCheckUpService) {
     @GetMapping("/paged/checkups")
     fun getCheckupsForId(
         @RequestParam(defaultValue = "") checkedCarId: UUID,
-        @RequestParam(defaultValue = "0") page : Int,
-        @RequestParam(defaultValue = "2") size : Int,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "2") size: Int,
     ) =
         ResponseEntity.ok(
-            carCheckUpService.getCheckupsById(checkedCarId,page,size)
+            carCheckUpService.getCheckupsById(checkedCarId, page, size)
         )
+
 }

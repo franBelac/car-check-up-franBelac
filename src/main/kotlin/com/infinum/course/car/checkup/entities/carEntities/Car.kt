@@ -1,6 +1,7 @@
 package com.infinum.course.car.checkup.entities.carEntities
 
 import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
 import java.util.UUID
 import javax.persistence.*
 
@@ -17,11 +18,20 @@ class Car(
     @Column(name = "production_year")
     val productionYear: Short = 2000,
 
-    @Column(name = "manufacturer")
-    val manufacturer: String = "Porsche",
-
-    @Column(name = "model")
-    val model: String = "Taycan",
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumns(
+        value = [
+            JoinColumn(
+                name = "manufacturer",
+                referencedColumnName = "manufacturer"
+            ),
+        JoinColumn(
+            name = "model",
+            referencedColumnName = "model"
+        )
+        ]
+    )
+    val manufacturerModel: ManufacturerModel = ManufacturerModel(),
 
     @Column(name = "vin")
     val vin: String = "JHKSF51",

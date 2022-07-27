@@ -1,5 +1,6 @@
 package com.infinum.course.car.checkup.entities.carEntities
 
+import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
 import java.time.LocalDateTime
 
 class CarClientSide (
@@ -12,8 +13,10 @@ class CarClientSide (
         Car (
             dateAdded = LocalDateTime.now().toString(),
             productionYear = productionYear,
-            manufacturer = manufacturer,
-            model = model,
-            vin = vin
+            vin = vin,
+            manufacturerModel = ManufacturerModel(
+                manufacturer,
+                model
+            )
                 )
 }

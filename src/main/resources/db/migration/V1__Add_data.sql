@@ -1,20 +1,33 @@
-create table cars (
-    id UUID PRIMARY KEY,
-    date_added VARCHAR(50) NOT NULL ,
-    production_year SMALLINT NOT NULL ,
+create table manufacturermodels
+(
     manufacturer VARCHAR(30) NOT NULL,
-    model VARCHAR(30) NOT NULL ,
-    vin VARCHAR(50) NOT NULL
+    model        VARCHAR(30) NOT NULL,
+    PRIMARY KEY (manufacturer,model)
+);
+
+create table cars
+(
+    id              UUID PRIMARY KEY,
+    date_added      VARCHAR(50) NOT NULL,
+    production_year SMALLINT    NOT NULL,
+    manufacturer    VARCHAR(30) NOT NULL,
+    model           VARCHAR(30) NOT NULL,
+    vin             VARCHAR(50) NOT NULL,
+    CONSTRAINT manufacturermodels_fk FOREIGN KEY (manufacturer,model)
+        REFERENCES manufacturermodels (manufacturer, model)
+);
+
+create table carcheckups
+(
+    id             UUID PRIMARY KEY,
+    performed_at   VARCHAR(50) NOT NULL,
+    worker_name    VARCHAR(30) NOT NULL,
+    price          BIGINT      NOT NULL,
+    checked_car_id UUID
+        CONSTRAINT car_fk REFERENCES cars (id)
 );
 
 
-create table carcheckups (
-    id UUID PRIMARY KEY,
-    performed_at VARCHAR(50) NOT NULL,
-    worker_name VARCHAR(30) NOT NULL,
-    price BIGINT NOT NULL,
-    checked_car_id UUID CONSTRAINT car_fk REFERENCES cars(id)
-);
 
 -- insert into cars(productionYear,manufacturer,model,vin) values  (2000,'Porsche','Taycan','GJHL30');
 -- insert into cars(productionYear,manufacturer,model,vin) values (2000,'Skoda','Fabia','QIUXA0');

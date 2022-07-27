@@ -1,6 +1,5 @@
 package com.infinum.course.car.checkup
 
-
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
 import com.infinum.course.car.checkup.entities.carEntities.CarClientSide
@@ -14,13 +13,13 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.util.*
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class CarCheckupIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
-    private val objectMapper: ObjectMapper
-    )  {
+    private val objectMapper: ObjectMapper,
+
+    ) {
 
     @Test
     fun testAddingCars() {
@@ -36,7 +35,7 @@ class CarCheckupIntegrationTest @Autowired constructor(
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             status {
-                isOk()
+                is4xxClientError()
             }
         }
     }
@@ -90,9 +89,11 @@ class CarCheckupIntegrationTest @Autowired constructor(
     @Test
     fun testPaginationCheckups() {
         mockMvc.get("/paged/checkups?checkedCarId=2d3212f8-58e9-47f4-bbe6-a8441496eaf6&page=0&size=2")
-            .andExpect { status {
-                is2xxSuccessful()
-            } }
+            .andExpect {
+                status {
+                    is2xxSuccessful()
+                }
+            }
     }
 
 }
