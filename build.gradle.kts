@@ -7,6 +7,8 @@ plugins {
     id("org.springframework.boot") version "2.7.1" // Defines version of Spring Boot
     id("io.spring.dependency-management") version "1.0.11.RELEASE" // Handles Spring
     id("org.unbroken-dome.test-sets") version "4.0.0"
+
+    kotlin("plugin.jpa") version "1.7.10"
 }
 
 group = "com.infinum.course"

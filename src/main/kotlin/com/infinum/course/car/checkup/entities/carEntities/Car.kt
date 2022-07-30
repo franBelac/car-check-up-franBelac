@@ -13,10 +13,10 @@ class Car(
     val id: UUID = UUID.randomUUID(),
 
     @Column(name = "date_added")
-    val dateAdded: String = "",
+    val dateAdded: String,
 
     @Column(name = "production_year")
-    val productionYear: Short = 2000,
+    val productionYear: Short,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns(
@@ -25,16 +25,16 @@ class Car(
                 name = "manufacturer",
                 referencedColumnName = "manufacturer"
             ),
-        JoinColumn(
-            name = "model",
-            referencedColumnName = "model"
-        )
+            JoinColumn(
+                name = "model",
+                referencedColumnName = "model"
+            )
         ]
     )
-    val manufacturerModel: ManufacturerModel = ManufacturerModel(),
+    val manufacturerModel: ManufacturerModel,
 
     @Column(name = "vin")
-    val vin: String = "JHKSF51",
+    val vin: String,
 
     @OneToMany(
         cascade = [CascadeType.ALL],

@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.UUID
 
-interface CheckUpRepository : JpaRepository<CarCheckUp,UUID> {
+interface CheckUpRepository : JpaRepository<CarCheckUp, UUID> {
 
-    fun save(carCheckUp: CarCheckUp) : CarCheckUp
+    fun save(carCheckUp: CarCheckUp): CarCheckUp
 
     @Query(
         value =
@@ -18,9 +18,12 @@ interface CheckUpRepository : JpaRepository<CarCheckUp,UUID> {
                 " group by cars.manufacturer ",
         nativeQuery = true
     )
-    fun getCheckupAnalytics() : List<String>
+    fun getCheckupAnalytics(): List<String>
 
-    fun findAllByCheckedCarId(checkedCarId : UUID,pageable: Pageable) : Page<CarCheckUp>
+
+    fun findAllByCheckedCarIdOrderByPerformedAtDesc(checkedCarId: UUID, pageable: Pageable): Page<CarCheckUp>
+
+    fun findAllByCheckedCarIdOrderByPerformedAtAsc(checkedCarId: UUID, pageable: Pageable): Page<CarCheckUp>
 
     override fun deleteAll()
 }
