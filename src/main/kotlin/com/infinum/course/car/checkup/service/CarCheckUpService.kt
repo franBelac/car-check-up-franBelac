@@ -89,4 +89,10 @@ class CarCheckUpService(
                 .getManufacturerModels()
         )
     }
+
+    fun deleteCar(uuid: UUID) =
+        carRepository.deleteById(uuid)
+
+    fun deleteCheckup(uuid: UUID) =
+        checkUpRepository.deleteById(uuid)
 }

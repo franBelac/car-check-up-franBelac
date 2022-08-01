@@ -13,6 +13,7 @@ import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -34,7 +35,7 @@ class CarController(
         carCheckUpService.addCar(clientCar), HttpStatus.CREATED
     )
 
-    @GetMapping("/car-details/{id}")
+    @GetMapping("/car/{id}")
     @ResponseBody
     fun getCarDetails(@PathVariable id: UUID): ResponseEntity<CarDetailsResource> = ResponseEntity.ok(
         carDetailsResourceAssembler.toModel(
@@ -42,7 +43,7 @@ class CarController(
         )
     )
 
-    @GetMapping("/paged/cars")
+    @GetMapping("/cars")
     fun getAllCars(
         pageable: Pageable,
         pagedResourcesAssembler: PagedResourcesAssembler<Car>
@@ -52,5 +53,14 @@ class CarController(
             carResourceAssembler
         )
     )
+
+    @DeleteMapping("/car/{id}")
+    @ResponseBody
+    fun deleteCar(
+        @PathVariable id: UUID
+    ): ResponseEntity<String> {
+        carCheckUpService.deleteCar(id)
+        return ResponseEntity.ok("$id DELETED")
+    }
 
 }

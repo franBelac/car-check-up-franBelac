@@ -41,13 +41,16 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 
     runtimeOnly("org.postgresql:postgresql")
-
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.mock-server:mockserver-spring-test-listener:5.13.2")
 
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
+
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
 
 }
 

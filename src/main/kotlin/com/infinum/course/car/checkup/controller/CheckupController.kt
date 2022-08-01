@@ -34,14 +34,28 @@ class CheckupController(
         )
     )
 
-    @GetMapping("/paged/checkups")
+    @GetMapping("/checkup")
+    @ResponseBody
     fun getCheckupsForId(
         @RequestParam(defaultValue = "") checkedCarId: UUID,
-        @RequestParam(defaultValue = "desc") sortBy: String,
+        @RequestParam(defaultValue = "desc") sortDirection: String,
         pageable: Pageable
     ): ResponseEntity<Page<CarCheckUp>> =
         ResponseEntity.ok(
-            carCheckUpService.getCheckupsById(checkedCarId, pageable, sortBy)
+            carCheckUpService.getCheckupsById(checkedCarId, pageable, sortDirection)
         )
+
+    @DeleteMapping("/checkup/{id}")
+    @ResponseBody
+    fun deleteCheckup(
+        @PathVariable id: UUID
+    ): ResponseEntity<String> {
+        carCheckUpService.deleteCheckup(id)
+
+        return ResponseEntity.ok(
+            "$id DELETED"
+        )
+    }
+
 
 }
