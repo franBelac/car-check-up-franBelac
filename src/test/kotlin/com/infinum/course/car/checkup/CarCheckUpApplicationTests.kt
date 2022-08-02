@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException
+import java.util.UUID
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -24,6 +25,8 @@ class CarCheckUpApplicationTests @Autowired constructor(
 ) {
 
     private val listOfIds = mutableListOf<Car>()
+
+    private lateinit var returnedUUID: UUID
 
     @BeforeEach
     fun setup() {
@@ -123,6 +126,7 @@ class CarCheckUpApplicationTests @Autowired constructor(
 
         checkUpRepository.save(checkup4)
 
+        returnedUUID = car1Id.id
     }
 
     @Test
@@ -147,6 +151,13 @@ class CarCheckUpApplicationTests @Autowired constructor(
                 )
             )
         }.isInstanceOf(JpaObjectRetrievalFailureException::class.java)
+    }
+
+    @Test
+    fun checkDeletion() {
+        assertThat(
+            carRepository.deleteById(returnedUUID)
+        ).isInstanceOf(Unit::class.java)
     }
 
 }

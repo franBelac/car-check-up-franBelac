@@ -1,14 +1,15 @@
 package com.infinum.course.car.checkup.service
 
 import com.infinum.course.car.checkup.entities.carEntities.CarClientSide
-import com.infinum.course.car.checkup.entities.CarDetails
+import com.infinum.course.car.checkup.entities.carEntities.CarDetails
 import com.infinum.course.car.checkup.entities.checkupEntities.CarCheckUp
+import com.infinum.course.car.checkup.entities.checkupEntities.CheckupAnalytics
+import com.infinum.course.car.checkup.entities.checkupEntities.CheckupClientSide
 import com.infinum.course.car.checkup.entities.manufacturerModel.ManufacturerModel
 import com.infinum.course.car.checkup.repository.CarRepository
 import com.infinum.course.car.checkup.repository.CheckUpRepository
 import com.infinum.course.car.checkup.repository.ManufacturerModelRepository
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -37,10 +38,11 @@ class CarCheckUpService(
         ).id
     }
 
-    fun addCheckup(carCheckUp: CarCheckUp): UUID =
-        checkUpRepository.save(
-            carCheckUp
+    fun addCheckup(checkupClientSide: CheckupClientSide): UUID {
+        return checkUpRepository.save(
+            checkupClientSide.toCheckup()
         ).id
+    }
 
     fun getCarDetails(id: UUID): CarDetails {
 
@@ -56,8 +58,12 @@ class CarCheckUpService(
         )
     }
 
-    fun getCheckupAnalytics(): Map<String, Long> =
-        checkUpRepository.getCheckupAnalytics().map { it.split(",") }.associate { it[0] to it[1].toLong() }
+    fun getCheckupAnalytics(): CheckupAnalytics =
+        CheckupAnalytics(
+            checkUpRepository.getCheckupAnalytics()
+                .map { it.split(",") }
+                .associate { it[0] to it[1].toLong() }
+        )
 
     fun getAllCars(pageable: Pageable) =
         carRepository.findAll(pageable)
@@ -65,12 +71,15 @@ class CarCheckUpService(
 
     fun getCheckupsById(
         checkedCarId: UUID,
-        page: Int,
-        size: Int,
+        pageable: Pageable,
+        sortBy: String
     ): Page<CarCheckUp> {
-        return checkUpRepository.findAllByCheckedCarId(
+        return if (sortBy == "asc") checkUpRepository.findAllByCheckedCarIdOrderByPerformedAtAsc(
             checkedCarId,
-            PageRequest.of(page, size)
+            pageable
+        ) else checkUpRepository.findAllByCheckedCarIdOrderByPerformedAtDesc(
+            checkedCarId,
+            pageable
         )
     }
 
@@ -80,4 +89,10 @@ class CarCheckUpService(
                 .getManufacturerModels()
         )
     }
+
+    fun deleteCar(uuid: UUID) =
+        carRepository.deleteById(uuid)
+
+    fun deleteCheckup(uuid: UUID) =
+        checkUpRepository.deleteById(uuid)
 }

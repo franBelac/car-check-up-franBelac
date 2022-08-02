@@ -7,6 +7,8 @@ plugins {
     id("org.springframework.boot") version "2.7.1" // Defines version of Spring Boot
     id("io.spring.dependency-management") version "1.0.11.RELEASE" // Handles Spring
     id("org.unbroken-dome.test-sets") version "4.0.0"
+
+    kotlin("plugin.jpa") version "1.7.10"
 }
 
 group = "com.infinum.course"
@@ -39,13 +41,16 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
 
     runtimeOnly("org.postgresql:postgresql")
-
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.mock-server:mockserver-spring-test-listener:5.13.2")
 
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
+
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("org.springframework.security:spring-security-test")
 
 }
 

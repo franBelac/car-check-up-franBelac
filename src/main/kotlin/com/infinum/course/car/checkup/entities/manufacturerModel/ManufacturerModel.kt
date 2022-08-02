@@ -12,9 +12,9 @@ import javax.persistence.Table
 data class ManufacturerModel(
     @Id
     @Column(name = "manufacturer")
-    val manufacturer: String = "",
+    val manufacturer: String,
 
     @Id
     @Column(name = "model")
-    val model: String = ""
+    val model: String
 )
